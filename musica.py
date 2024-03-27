@@ -14,7 +14,7 @@ azLinks = []
 allLinks = []
 gaanaLinks = []
 jioLinks = []
-
+artist_az, song_az, genArtist1, genSongName1, gaanaArtist, getGaana, jioArtist, getjio_Gaana = '', '', '', '', '', '', '', ''
 
 def getGoogleSearchLinks(query):
     try:
