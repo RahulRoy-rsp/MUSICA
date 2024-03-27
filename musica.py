@@ -14,23 +14,6 @@ allLinks = []
 gaanaLinks = []
 jioLinks = []
 
-
-def getGoogleSearchLinks(query):
-    try:
-        for links in search(query, tld="co.in", num=10, stop=10, pause=2):
-            if "genius" in links:
-                geniusLinks.append(links)
-            if "azlyrics" in links:
-                azLinks.append(links)
-            if "jiosaavn" in links:
-                jioLinks.append(links)
-            if "gaana" in links:
-                gaanaLinks.append(links)
-            allLinks.append(links)
-    except Exception as e:
-        print(f"Couldn't find links due to {e}")
-
-
 def getAZ_info(url):
     try:
         for i in url:
@@ -212,8 +195,20 @@ def downloadVideo(link, dim):
     else:
         st.error("The video can't be downloaded due to no link found.")
 
-def temp(db, link, dim):
-    print(db)
+def getGoogleSearchLinks(query):
+    try:
+        for links in search(query, tld="co.in", num=10, stop=10, pause=2):
+            if "genius" in links:
+                geniusLinks.append(links)
+            if "azlyrics" in links:
+                azLinks.append(links)
+            if "jiosaavn" in links:
+                jioLinks.append(links)
+            if "gaana" in links:
+                gaanaLinks.append(links)
+            allLinks.append(links)
+    except Exception as e:
+        print(f"Couldn't find links due to {e}")
 
 st.set_page_config(page_title="MUSICA", page_icon="musical_note")
 
