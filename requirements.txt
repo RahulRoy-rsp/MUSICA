@@ -1,6 +1,6 @@
 streamlit
 pandas
 googlesearch
-bs4 (beautifulsoup)
+bs4
 requests
 pytube
