@@ -14,6 +14,23 @@ allLinks = []
 gaanaLinks = []
 jioLinks = []
 
+
+def getGoogleSearchLinks(query):
+    try:
+        for links in search(query, tld="co.in", num=10, stop=10, pause=2):
+            if "genius" in links:
+                geniusLinks.append(links)
+            if "azlyrics" in links:
+                azLinks.append(links)
+            if "jiosaavn" in links:
+                jioLinks.append(links)
+            if "gaana" in links:
+                gaanaLinks.append(links)
+            allLinks.append(links)
+    except Exception as e:
+        print(f"Couldn't find links due to {e}")
+
+
 def getAZ_info(url):
     try:
         for i in url:
@@ -195,20 +212,8 @@ def downloadVideo(link, dim):
     else:
         st.error("The video can't be downloaded due to no link found.")
 
-def getGoogleSearchLinks(query):
-    try:
-        for links in search(query, tld="co.in", num=10, stop=10, pause=2):
-            if "genius" in links:
-                geniusLinks.append(links)
-            if "azlyrics" in links:
-                azLinks.append(links)
-            if "jiosaavn" in links:
-                jioLinks.append(links)
-            if "gaana" in links:
-                gaanaLinks.append(links)
-            allLinks.append(links)
-    except Exception as e:
-        print(f"Couldn't find links due to {e}")
+def temp(db, link, dim):
+    print(db)
 
 st.set_page_config(page_title="MUSICA", page_icon="musical_note")
 
@@ -246,85 +251,85 @@ proceed_button = st.sidebar.button("Enter", key = 'bh')
 
 vidRes = st.sidebar.selectbox('Select Resolution', ('recommended', '720', '480', '360'))
 
-# try:
-if proceed_button: 
-    if len(lyricsInput) > 0:
+try:
+    if proceed_button: 
+        if len(lyricsInput) > 0:
 
-        geniusLinks = []
-        azLinks = []
-        allLinks = []
-        gaanaLinks = []
-        jioLinks = []
-        downloadCheck = False
+            geniusLinks = []
+            azLinks = []
+            allLinks = []
+            gaanaLinks = []
+            jioLinks = []
+            downloadCheck = False
 
-        st.write(f"""
+            st.write(f"""
+                <div style='color: green; font-family: Roboto;'>
+                    Searching ...
+                </div>
+                <div style='color: black; font-family: Georgia;'>
+                    {lyricsInput}<br>
+                </div>
+            """
+            , unsafe_allow_html=True)
+
+            query = "song lyrics: " + lyricsInput
+
+            getGoogleSearchLinks(query)
+
+            azInfo, azYTLink, = {}, ''
+            genInfo, genYTLink, = {}, ''
+            gaanaInfo, gaanaYTLink, = {}, ''
+            jioInfo, jioYTLink, = {}, ''
+
+            if azLinks:
+                azInfo = getAZ_info([azLinks[0]])
+                azYTLink = getYTLink_az(azInfo)
+            if geniusLinks:
+                genInfo = getGenius_info([geniusLinks[0]])
+                genYTLink = getYTLink_gen(genInfo)
+
+            if gaanaLinks:
+                gaanaInfo = getGaana_info([gaanaLinks[0]])
+                gaanaYTLink = getYTLink_gaana(gaanaInfo)
+
+            if jioLinks:
+                jioInfo = getjio_info([jioLinks[0]])
+                jioYTLinks = getYTLink_jio(jioInfo)
+
+            data = [(song, artist, azYTLink) for artist, song in azInfo.items()] + [(song, artist, genYTLink) for artist, song in genInfo.items()] + [(song, artist, gaanaYTLink) for artist, song in gaanaInfo.items()] + [(song, artist, jioYTLinks) for artist, song in jioInfo.items()]
+
+            infoDF = pd.DataFrame(data, columns=["Song Name", "Artist Name", "YouTube Search"])
+            
+            if len(infoDF) > 0:
+                st.write(f"""
+                <h3 style='color: black; font-family: Arial;'>
+                    <br>Here's some top result 
+                </h3>
+                """, unsafe_allow_html=True)
+                st.write(infoDF)
+                tempDF = infoDF.iloc[:, 0:2]
+                song_ = tempDF['Song Name'].values[0]
+                artist_ =  tempDF['Artist Name'].values[0]
+
+                offYTLink = getOffYTLink(song_, artist_)
+                st.header("YOUTUBE VIDEO")
+                st.video(offYTLink)
+                db = st.button('Download Video', on_click=downloadVideo, args=(offYTLink, vidRes))
+
+            else:
+                st.error('No result found.')
+            st.write(f"""
             <div style='color: green; font-family: Roboto;'>
-                Searching ...
+                <br>Not sure what you're looking for? here's a few link to see if you find the desired results
             </div>
-            <div style='color: black; font-family: Georgia;'>
-                {lyricsInput}<br>
-            </div>
-        """
-        , unsafe_allow_html=True)
-
-        query = "song lyrics: " + lyricsInput
-
-        getGoogleSearchLinks(query)
-
-        azInfo, azYTLink, = {}, ''
-        genInfo, genYTLink, = {}, ''
-        gaanaInfo, gaanaYTLink, = {}, ''
-        jioInfo, jioYTLink, = {}, ''
-
-        if azLinks:
-            azInfo = getAZ_info([azLinks[0]])
-            azYTLink = getYTLink_az(azInfo)
-        if geniusLinks:
-            genInfo = getGenius_info([geniusLinks[0]])
-            genYTLink = getYTLink_gen(genInfo)
-
-        if gaanaLinks:
-            gaanaInfo = getGaana_info([gaanaLinks[0]])
-            gaanaYTLink = getYTLink_gaana(gaanaInfo)
-
-        if jioLinks:
-            jioInfo = getjio_info([jioLinks[0]])
-            jioYTLinks = getYTLink_jio(jioInfo)
-
-        data = [(song, artist, azYTLink) for artist, song in azInfo.items()] + [(song, artist, genYTLink) for artist, song in genInfo.items()] + [(song, artist, gaanaYTLink) for artist, song in gaanaInfo.items()] + [(song, artist, jioYTLinks) for artist, song in jioInfo.items()]
-
-        infoDF = pd.DataFrame(data, columns=["Song Name", "Artist Name", "YouTube Search"])
-        
-        if len(infoDF) > 0:
-            st.write(f"""
-            <h3 style='color: black; font-family: Arial;'>
-                <br>Here's some top result 
-            </h3>
             """, unsafe_allow_html=True)
-            st.write(infoDF)
-            tempDF = infoDF.iloc[:, 0:2]
-            song_ = tempDF['Song Name'].values[0]
-            artist_ =  tempDF['Artist Name'].values[0]
-
-            offYTLink = getOffYTLink(song_, artist_)
-            st.header("YOUTUBE VIDEO")
-            st.video(offYTLink)
-            db = st.button('Download Video', on_click=downloadVideo, args=(offYTLink, vidRes))
-
+            for i in allLinks:
+                st.write(f"""
+                        <a href = {i} style='color: blue; font-family: consolas;'>
+                            {i}
+                        </a>
+                        """, unsafe_allow_html=True)
         else:
-            st.error('No result found.')
-        st.write(f"""
-        <div style='color: green; font-family: Roboto;'>
-            <br>Not sure what you're looking for? here's a few link to see if you find the desired results
-        </div>
-        """, unsafe_allow_html=True)
-        for i in allLinks:
-            st.write(f"""
-                    <a href = {i} style='color: blue; font-family: consolas;'>
-                        {i}
-                    </a>
-                    """, unsafe_allow_html=True)
-    else:
-        st.warning('Please enter Lyrics', icon="⚠️")
-# except Exception as e:
-    # st.error(f'Error due to {e}. Please try again.')
+            st.warning('Please enter Lyrics', icon="⚠️")
+except Exception as e:
+    st.error(f'Error due to {e}. Please try again.')
