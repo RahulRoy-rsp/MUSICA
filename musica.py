@@ -212,8 +212,6 @@ def downloadVideo(link, dim):
     else:
         st.error("The video can't be downloaded due to no link found.")
 
-def temp(db, link, dim):
-    print(db)
 
 st.set_page_config(page_title="MUSICA", page_icon="musical_note")
 
