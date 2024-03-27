@@ -262,6 +262,8 @@ try:
             gaanaLinks = []
             jioLinks = []
             downloadCheck = False
+            artist_az, song_az, genArtist1, genSongName1, gaanaArtist, getGaana, jioArtist, getjio_Gaana = '', '', '', '', '', '', '', ''
+
 
             st.write(f"""
                 <div style='color: green; font-family: Roboto;'>
