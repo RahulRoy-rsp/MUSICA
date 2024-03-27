@@ -6,7 +6,6 @@ from bs4 import BeautifulSoup
 import requests
 import urllib
 import re
-import time
 from pytube import YouTube
 
 geniusLinks = []
@@ -14,7 +13,7 @@ azLinks = []
 allLinks = []
 gaanaLinks = []
 jioLinks = []
-artist_az, song_az, genArtist1, genSongName1, gaanaArtist, getGaana, jioArtist, getjio_Gaana = '', '', '', '', '', '', '', ''
+
 
 def getGoogleSearchLinks(query):
     try:
@@ -262,8 +261,6 @@ try:
             gaanaLinks = []
             jioLinks = []
             downloadCheck = False
-            artist_az, song_az, genArtist1, genSongName1, gaanaArtist, getGaana, jioArtist, getjio_Gaana = '', '', '', '', '', '', '', ''
-
 
             st.write(f"""
                 <div style='color: green; font-family: Roboto;'>
