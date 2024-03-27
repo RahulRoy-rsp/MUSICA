@@ -192,6 +192,7 @@ def getOffYTLink(sName, aName):
     except Exception as e:
         st.error(f"Couldn't get the official link.", icon="🚨")
 
+
 def downloadVideo(link, dim):
     if link:
         if dim == 'recommended':
