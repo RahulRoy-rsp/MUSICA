@@ -1,0 +1,6 @@
+streamlit
+pandas
+googlesearch
+bs4 (beautifulsoup)
+requests
+pytube
